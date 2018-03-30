@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "type": "shell",
+    "presentation": {
+        "reveal": "always"
+    },
+    "options": {
+        "cwd": "${workspaceRoot}/build"
+    },
+    "tasks": [
+        {
+            "label": "cmake",
+            "command": "cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE=Debug ..",
+            "problemMatcher": []
+        },
+        {
+            "label": "make",
+            "command": "make -j 8 && ${workspaceRoot}/build/spaceinvaders/spaceinvaders",
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}
