@@ -31,8 +31,17 @@ void InvadersManager::Update(GLfloat deltaTime, GLuint windowWidth, GLuint windo
     for (Invader &invader : this->fleet)
         invader.Position += velocity * deltaTime;
 
-    if (this->fleet[0].Position.x < 8.0f || this->fleet[rowAmount - 1].Position.x > windowWidth - INVADER_SIZE.x - 8.0f)
+    if (this->fleet[0].Position.x < 8.0f)
     {
+        this->fleet[0].Position.x = 8.0f;
+        for (Invader &invader : this->fleet)
+            invader.Position.y += 16.0f;
+
+        velocity.x *= -1.0f;
+    }
+    if (this->fleet[rowAmount - 1].Position.x > windowWidth - INVADER_SIZE.x - 8.0f)
+    {
+        this->fleet[rowAmount - 1].Position.x = windowWidth - INVADER_SIZE.x - 8.0;
         for (Invader &invader : this->fleet)
             invader.Position.y += 16.0f;
 
