@@ -35,6 +35,7 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, key_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    // glfwSwapInterval(0); // Disable vsync
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -68,7 +69,7 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        SpaceInvaders->Render();
+        SpaceInvaders->Render(deltaTime);
 
         glfwSwapBuffers(window);
     }

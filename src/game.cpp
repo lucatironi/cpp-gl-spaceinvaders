@@ -76,7 +76,7 @@ void Game::Update(GLfloat deltaTime)
     this->DoCollisions();
 }
 
-void Game::Render()
+void Game::Render(GLfloat deltaTime)
 {
     this->PlayerLaserCannon->Draw(*Renderer);
     this->Projectiles->Draw(*Renderer);
@@ -89,6 +89,10 @@ void Game::Render()
     std::stringstream score;
     score << "Score: " << this->PlayerScore;
     Text->RenderText(score.str(), this->WindowWidth - 200.0f, 5.0f, 1.0f);
+
+    std::stringstream fps;
+    fps << (int)(1 / deltaTime);
+    Text->RenderText(fps.str(), this->WindowWidth - 30.0f, this->WindowHeight - 20.0f, 0.5f);
 }
 
 void Game::Reset()

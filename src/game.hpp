@@ -37,7 +37,7 @@ class Game
         void Init();
         void ProcessInput(GLfloat deltaTime);
         void Update(GLfloat deltaTime);
-        void Render();
+        void Render(GLfloat deltaTime);
         void DoCollisions();
         void SpawnBombs();
 
