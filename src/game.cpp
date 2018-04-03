@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "game.hpp"
 #include "resource_manager.hpp"
 
@@ -7,7 +9,9 @@ Game::Game(GLuint windowWidth, GLuint windowHeight, GLuint framebufferWidth, GLu
       WindowWidth(windowWidth),
       WindowHeight(windowHeight),
       FramebufferWidth(framebufferWidth),
-      FramebufferHeight(framebufferHeight)
+      FramebufferHeight(framebufferHeight),
+      PlayerLives(3),
+      PlayerScore(0)
 {
 }
 
@@ -78,7 +82,13 @@ void Game::Render()
     this->Projectiles->Draw(*Renderer);
     this->Invaders->Draw(*Renderer);
 
-    this->Text->RenderText("Space Invaders", 5.0f, 5.0f, 1.0f);
+    std::stringstream lives;
+    lives << "Lives: " << this->PlayerLives;
+    Text->RenderText(lives.str(), 5.0f, 5.0f, 1.0f);
+
+    std::stringstream score;
+    score << "Score: " << this->PlayerScore;
+    Text->RenderText(score.str(), this->WindowWidth - 200.0f, 5.0f, 1.0f);
 }
 
 void Game::Reset()
@@ -118,10 +128,19 @@ void Game::DoCollisions()
             {
                 if (laser.Life > 0.0f && CheckCollision(laser, invader))
                 {
+                    this->PlayerScore += 80;
                     invader.Destroyed = GL_TRUE;
                     laser.Life = 0.0f;
                 }
             }
+        }
+    }
+    for (Projectile &bomb : Projectiles->bombs)
+    {
+        if (bomb.Life > 0.0f && CheckCollision(bomb, *this->PlayerLaserCannon))
+        {
+            this->PlayerLives--;
+            bomb.Life = 0.0f;
         }
     }
 }

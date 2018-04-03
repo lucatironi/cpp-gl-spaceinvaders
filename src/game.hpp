@@ -19,10 +19,10 @@ enum GameState
 };
 
 const glm::vec2 LASERCANNON_SIZE(32, 16);
-const GLfloat LASERCANNON_VELOCITY(500.0f);
+const GLfloat   LASERCANNON_VELOCITY(500.0f);
 const glm::vec2 LASER_VELOCITY(0.0f, -450.0f);
 const glm::vec2 BOMB_VELOCITY(0.0f, 300.0f);
-const GLfloat SCREEN_PADDING(16.0f);
+const GLfloat   SCREEN_PADDING(16.0f);
 
 class Game
 {
@@ -54,6 +54,8 @@ class Game
         ProjectileManager *Projectiles;
         InvadersManager   *Invaders;
         GameObject        *PlayerLaserCannon;
+        GLuint            PlayerLives;
+        GLuint            PlayerScore;
 };
 
 #endif
