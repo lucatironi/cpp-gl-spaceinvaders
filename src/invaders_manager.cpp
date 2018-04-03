@@ -27,6 +27,10 @@ GLboolean bounceAndSlide = false;
 
 void InvadersManager::Update(GLfloat deltaTime, GLuint windowWidth, GLuint windowHeight)
 {
+
+    for (Invader &invader : this->fleet)
+        invader.Position += velocity * deltaTime;
+
     if (this->fleet[0].Position.x < 8.0f || this->fleet[rowAmount - 1].Position.x > windowWidth - INVADER_SIZE.x - 8.0f)
     {
         for (Invader &invader : this->fleet)
@@ -34,9 +38,6 @@ void InvadersManager::Update(GLfloat deltaTime, GLuint windowWidth, GLuint windo
 
         velocity.x *= -1.0f;
     }
-
-    for (Invader &invader : this->fleet)
-        invader.Position += velocity * deltaTime;
 }
 
 void InvadersManager::Draw(SpriteRenderer &renderer)
