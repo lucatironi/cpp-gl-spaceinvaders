@@ -49,13 +49,14 @@ class Game
     private:
         GLuint WindowWidth, WindowHeight, FramebufferWidth, FramebufferHeight;
 
-        SpriteRenderer    *Renderer;
-        TextRenderer      *Text;
-        ProjectileManager *Projectiles;
-        InvadersManager   *Invaders;
-        GameObject        *PlayerLaserCannon;
-        GLuint            PlayerLives;
-        GLuint            PlayerScore;
+        SpriteRenderer          *Renderer;
+        TextRenderer            *Text;
+        ProjectileManager       *Projectiles;
+        InvadersManager         *Invaders;
+        GameObject              *PlayerLaserCannon;
+        std::vector<GameObject> Barriers;
+        GLuint                  PlayerLives;
+        GLuint                  PlayerScore;
 };
 
 #endif
