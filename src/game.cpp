@@ -95,7 +95,7 @@ void Game::SpawnBombs()
 {
     for (Invader &invader : Invaders->fleet)
     {
-        if (ShouldSpawn(5000))
+        if (!invader.Destroyed && ShouldSpawn(5000))
         {
             glm::vec2 bombSpawnPoint = glm::vec2(
                 invader.Position.x + INVADER_SIZE.x / 2,
