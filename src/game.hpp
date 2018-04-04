@@ -15,7 +15,8 @@ enum GameState
 {
     GAME_ACTIVE,
     GAME_MENU,
-    GAME_WIN
+    GAME_WIN,
+    GAME_LOST
 };
 
 const glm::vec2 LASERCANNON_SIZE(32, 16);

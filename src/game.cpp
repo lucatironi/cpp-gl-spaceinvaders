@@ -97,6 +97,11 @@ void Game::Update(GLfloat deltaTime)
         this->SpawnBombs();
         this->DoCollisions();
     }
+    if (this->PlayerLives == 0)
+    {
+        this->Reset();
+        this->State = GAME_MENU;
+    }
 }
 
 void Game::Render(GLfloat deltaTime)
@@ -134,6 +139,9 @@ void Game::Render(GLfloat deltaTime)
 
 void Game::Reset()
 {
+    this->PlayerLives = 3;
+    this->PlayerScore = 0;
+    this->Invaders->Init();
 }
 
 GLboolean ShouldSpawn(GLuint chance)

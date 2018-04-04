@@ -30,6 +30,7 @@ class InvadersManager
 
         void Update(GLfloat deltaTime, GLuint windowWidth, GLuint windowHeight);
         void Draw(SpriteRenderer &renderer);
+        void Init();
 
         std::vector<Invader> fleet;
 

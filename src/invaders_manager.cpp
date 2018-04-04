@@ -3,18 +3,7 @@
 InvadersManager::InvadersManager(GLuint amount, GLuint rowAmount)
     : amount(amount), rowAmount(rowAmount)
 {
-    for (GLuint count = 0, x = 0, y = 0, i = 0, j = 0; count < this->amount; ++count, ++i)
-    {
-        if (count % this->rowAmount == 0)
-        {
-            i = 0;
-            j++;
-        }
-        x = INVADER_SIZE.x * 2 * i + 16.0f;
-        y = INVADER_SIZE.y * 2 * j + 16.0f;
-
-        this->fleet.push_back(Invader(glm::vec2(x, y), INVADER_SIZE, glm::vec3(1.0f), glm::vec2(0.0f)));
-    }
+    this->Init();
 }
 
 InvadersManager::~InvadersManager()
@@ -55,5 +44,22 @@ void InvadersManager::Draw(SpriteRenderer &renderer)
     {
         if (!invader.Destroyed)
             invader.Draw(renderer);
+    }
+}
+
+void InvadersManager::Init()
+{
+    this->fleet.clear();
+    for (GLuint count = 0, x = 0, y = 0, i = 0, j = 0; count < this->amount; ++count, ++i)
+    {
+        if (count % this->rowAmount == 0)
+        {
+            i = 0;
+            j++;
+        }
+        x = INVADER_SIZE.x * 2 * i + 16.0f;
+        y = INVADER_SIZE.y * 2 * j + 16.0f;
+
+        this->fleet.push_back(Invader(glm::vec2(x, y), INVADER_SIZE, glm::vec3(1.0f), glm::vec2(0.0f)));
     }
 }
