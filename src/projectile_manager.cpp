@@ -66,6 +66,9 @@ void ProjectileManager::Draw(SpriteRenderer &renderer)
 
 void ProjectileManager::Init()
 {
+    this->lasers.clear();
+    this->bombs.clear();
+
     // Create this->amount default projectile instances
     for (GLuint i = 0; i < this->amount; ++i)
     {
