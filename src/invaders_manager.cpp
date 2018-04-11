@@ -63,3 +63,11 @@ void InvadersManager::Init()
         this->fleet.push_back(Invader(glm::vec2(x, y), INVADER_SIZE, glm::vec3(1.0f), glm::vec2(0.0f)));
     }
 }
+
+GLboolean InvadersManager::AllDead()
+{
+    if ( std::all_of(this->fleet.begin(), this->fleet.end(), [](Invader i) { return i.Destroyed == GL_TRUE; }) )
+        return GL_TRUE;
+    else
+        return GL_FALSE;
+}

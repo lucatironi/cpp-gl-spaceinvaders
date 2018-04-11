@@ -5,12 +5,7 @@
 ProjectileManager::ProjectileManager(GLuint amount)
     : amount(amount)
 {
-    // Create this->amount default projectile instances
-    for (GLuint i = 0; i < this->amount; ++i)
-    {
-        this->lasers.push_back(Projectile(glm::vec3(0.0f, 1.0f, 0.0f)));
-        this->bombs.push_back(Projectile(glm::vec3(1.0f, 1.0f, 1.0f)));
-    }
+    this->Init();
 }
 
 ProjectileManager::~ProjectileManager()
@@ -66,6 +61,16 @@ void ProjectileManager::Draw(SpriteRenderer &renderer)
     {
         if (bomb.Life > 0.0f)
             bomb.Draw(renderer);
+    }
+}
+
+void ProjectileManager::Init()
+{
+    // Create this->amount default projectile instances
+    for (GLuint i = 0; i < this->amount; ++i)
+    {
+        this->lasers.push_back(Projectile(glm::vec3(0.0f, 1.0f, 0.0f)));
+        this->bombs.push_back(Projectile(glm::vec3(1.0f, 1.0f, 1.0f)));
     }
 }
 

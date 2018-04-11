@@ -31,15 +31,12 @@ void Game::Init()
     // Set render-specific controls
     this->Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
     this->Projectiles = new ProjectileManager(25);
-    this->Invaders = new InvadersManager(55, 11);
+    this->Invaders = new InvadersManager(11, 11);
     this->Text = new TextRenderer(this->WindowWidth, this->WindowHeight);
     this->Text->Load("../assets/PressStart2P-Regular.ttf", 16);
 
     // Initalize game objects
-    glm::vec2 playerPosition = glm::vec2(
-        this->WindowWidth / 2 - LASERCANNON_SIZE.x / 2,
-        this->WindowHeight - LASERCANNON_SIZE.y - SCREEN_PADDING);
-    this->PlayerLaserCannon = new GameObject(playerPosition, LASERCANNON_SIZE, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f));
+    this->InitPlayer();
 
     GLfloat offset = 0;
     for (GLuint i = 0; i < 4; ++i)
@@ -52,10 +49,11 @@ void Game::Init()
 
 void Game::ProcessInput(GLfloat deltaTime)
 {
-    if (this->State == GAME_MENU)
+    if (this->State == GAME_MENU || this->State == GAME_WIN || this->State == GAME_LOST)
     {
         if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
         {
+            this->Reset();
             this->State = GAME_ACTIVE;
             this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
         }
@@ -97,11 +95,12 @@ void Game::Update(GLfloat deltaTime)
         this->SpawnBombs();
         this->DoCollisions();
     }
-    if (this->PlayerLives == 0)
-    {
-        this->Reset();
-        this->State = GAME_MENU;
-    }
+    if (this->Invaders->AllDead())
+        this->State = GAME_WIN;
+
+    if (this->PlayerLives == 0 ||
+        this->Invaders->fleet[54].Position.y > this->WindowHeight - 64.0f - LASERCANNON_SIZE.y - SCREEN_PADDING * 2)
+        this->State = GAME_LOST;
 }
 
 void Game::Render(GLfloat deltaTime)
@@ -113,24 +112,29 @@ void Game::Render(GLfloat deltaTime)
         this->Invaders->Draw(*Renderer);
         for (GameObject &barrier : this->Barriers)
             barrier.Draw(*Renderer);
-
-        std::stringstream lives;
-        lives << "Lives: " << this->PlayerLives;
-        Text->RenderText(lives.str(), 8.0f, 8.0f, 1.0f);
-
-        std::stringstream score;
-        score << "Score: " << this->PlayerScore;
-        Text->RenderText(score.str(), this->WindowWidth - 200.0f, 8.0f, 1.0f);
     }
+
     if (this->State == GAME_MENU)
-    {
         Text->RenderText("Press ENTER to start", 250.0f, this->WindowHeight / 2, 1.0f);
-    }
+
     if (this->State == GAME_WIN)
-    {
         Text->RenderText("You WON!!!", 320.0f, this->WindowHeight / 2 - 20.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+    if (this->State == GAME_LOST)
+        Text->RenderText("You LOST...", 320.0f, this->WindowHeight / 2 - 20.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    if (this->State == GAME_WIN || this->State == GAME_LOST)
         Text->RenderText("Press ENTER to retry or ESC to quit", 130.0f, this->WindowHeight / 2, 1.0f);
-    }
+
+    // Render Lives and Score
+    std::stringstream lives;
+    lives << "Lives: " << this->PlayerLives;
+    Text->RenderText(lives.str(), 8.0f, 8.0f, 1.0f);
+
+    std::stringstream score;
+    score << "Score: " << this->PlayerScore;
+    Text->RenderText(score.str(), this->WindowWidth - 200.0f, 8.0f, 1.0f);
+
     // Render FPS
     std::stringstream fps;
     fps << (int)(1 / deltaTime);
@@ -139,9 +143,20 @@ void Game::Render(GLfloat deltaTime)
 
 void Game::Reset()
 {
+    this->InitPlayer();
+    this->Invaders->Init();
+    this->Projectiles->Init();
+}
+
+void Game::InitPlayer()
+{
     this->PlayerLives = 3;
     this->PlayerScore = 0;
-    this->Invaders->Init();
+
+    glm::vec2 playerPosition = glm::vec2(
+        this->WindowWidth / 2 - LASERCANNON_SIZE.x / 2,
+        this->WindowHeight - LASERCANNON_SIZE.y - SCREEN_PADDING);
+    this->PlayerLaserCannon = new GameObject(playerPosition, LASERCANNON_SIZE, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f));
 }
 
 GLboolean ShouldSpawn(GLuint chance)
@@ -154,7 +169,7 @@ void Game::SpawnBombs()
 {
     for (Invader &invader : Invaders->fleet)
     {
-        if (!invader.Destroyed && ShouldSpawn(1000))
+        if (!invader.Destroyed && ShouldSpawn(BOMB_SPAWN_CHANCE))
         {
             glm::vec2 bombSpawnPoint = glm::vec2(
                 invader.Position.x + INVADER_SIZE.x / 2,

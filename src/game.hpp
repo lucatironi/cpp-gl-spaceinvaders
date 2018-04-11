@@ -24,6 +24,7 @@ const GLfloat   LASERCANNON_VELOCITY(500.0f);
 const glm::vec2 LASER_VELOCITY(0.0f, -450.0f);
 const glm::vec2 BOMB_VELOCITY(0.0f, 300.0f);
 const GLfloat   SCREEN_PADDING(16.0f);
+const GLuint    BOMB_SPAWN_CHANCE(2500);
 
 class Game
 {
@@ -42,6 +43,7 @@ class Game
         void DoCollisions();
         void SpawnBombs();
 
+        void InitPlayer();
         void Reset();
 
         void SetFramebufferSize(GLuint framebufferWidth, GLuint framebufferHeight)

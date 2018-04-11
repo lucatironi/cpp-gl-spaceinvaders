@@ -38,12 +38,12 @@ class ProjectileManager
         ProjectileManager(GLuint amount);
         ~ProjectileManager();
 
-        void FireLaser(glm::vec2 from, glm::vec2 velocity);
-
-        void FireBomb(glm::vec2 from, glm::vec2 velocity);
-
         void Update(GLfloat deltaTime, GLuint windowHeight);
         void Draw(SpriteRenderer &renderer);
+        void Init();
+
+        void FireLaser(glm::vec2 from, glm::vec2 velocity);
+        void FireBomb(glm::vec2 from, glm::vec2 velocity);
 
         std::vector<Projectile> lasers;
         std::vector<Projectile> bombs;

@@ -1,6 +1,7 @@
 #ifndef INVADERS_MANAGER_H
 #define INVADERS_MANAGER_H
 #include <vector>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 
@@ -31,6 +32,8 @@ class InvadersManager
         void Update(GLfloat deltaTime, GLuint windowWidth, GLuint windowHeight);
         void Draw(SpriteRenderer &renderer);
         void Init();
+
+        GLboolean AllDead();
 
         std::vector<Invader> fleet;
 
