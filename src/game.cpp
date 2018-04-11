@@ -31,7 +31,7 @@ void Game::Init()
     // Set render-specific controls
     this->Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
     this->Projectiles = new ProjectileManager(25);
-    this->Invaders = new InvadersManager(11, 11);
+    this->Invaders = new InvadersManager(55, 11);
     this->Text = new TextRenderer(this->WindowWidth, this->WindowHeight);
     this->Text->Load("../assets/PressStart2P-Regular.ttf", 16);
 
