@@ -66,7 +66,14 @@ void InvadersManager::Init()
 
 GLboolean InvadersManager::AllDead()
 {
-    if ( std::all_of(this->fleet.begin(), this->fleet.end(), [](Invader i) { return i.Destroyed == GL_TRUE; }) )
+    if (std::all_of(this->fleet.begin(), this->fleet.end(), [](Invader i) { return i.Destroyed == GL_TRUE; }))
+        return GL_TRUE;
+    else
+        return GL_FALSE;
+}
+GLboolean InvadersManager::ReachedBoundary(GLuint boundary)
+{
+    if (std::any_of(this->fleet.begin(), this->fleet.end(), [&](Invader i) { return i.Destroyed == GL_FALSE && i.Position.y > boundary; }))
         return GL_TRUE;
     else
         return GL_FALSE;

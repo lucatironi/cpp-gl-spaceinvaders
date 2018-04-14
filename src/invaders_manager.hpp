@@ -34,6 +34,7 @@ class InvadersManager
         void Init();
 
         GLboolean AllDead();
+        GLboolean ReachedBoundary(GLuint boundary);
 
         std::vector<Invader> fleet;
 
