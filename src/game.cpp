@@ -99,7 +99,7 @@ void Game::Update(GLfloat deltaTime)
         this->State = GAME_WIN;
 
     if (this->PlayerLives == 0 ||
-        this->Invaders->fleet[54].Position.y > this->WindowHeight - 64.0f - LASERCANNON_SIZE.y - SCREEN_PADDING * 2)
+        this->Invaders->ReachedBoundary(this->WindowHeight - 64.0f - LASERCANNON_SIZE.y - SCREEN_PADDING * 2 - INVADER_SIZE.y))
         this->State = GAME_LOST;
 }
 
