@@ -1,7 +1,7 @@
 #include "invaders_manager.hpp"
 
 InvadersManager::InvadersManager(GLuint amount, GLuint rowAmount)
-    : amount(amount), rowAmount(rowAmount)
+    : amount(amount), rowAmount(rowAmount), velocity(50.0f, 0.0f)
 {
     this->Init();
 }
@@ -10,15 +10,11 @@ InvadersManager::~InvadersManager()
 {
 }
 
-glm::vec2 velocity(50.0f, 0.0f);
-GLfloat slideTime = 0.0f;
-GLboolean bounceAndSlide = false;
-
 void InvadersManager::Update(GLfloat deltaTime, GLuint windowWidth, GLuint windowHeight)
 {
 
     for (Invader &invader : this->fleet)
-        invader.Position += velocity * deltaTime;
+        invader.Position += this->velocity * deltaTime;
 
     if (this->fleet[0].Position.x < 8.0f)
     {
@@ -26,7 +22,7 @@ void InvadersManager::Update(GLfloat deltaTime, GLuint windowWidth, GLuint windo
         for (Invader &invader : this->fleet)
             invader.Position.y += 16.0f;
 
-        velocity.x *= -1.0f;
+        this->velocity.x *= -1.0f;
     }
     if (this->fleet[rowAmount - 1].Position.x > windowWidth - INVADER_SIZE.x - 8.0f)
     {
@@ -34,7 +30,7 @@ void InvadersManager::Update(GLfloat deltaTime, GLuint windowWidth, GLuint windo
         for (Invader &invader : this->fleet)
             invader.Position.y += 16.0f;
 
-        velocity.x *= -1.0f;
+        this->velocity.x *= -1.0f;
     }
 }
 

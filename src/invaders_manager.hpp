@@ -40,5 +40,6 @@ class InvadersManager
 
     private:
         GLuint amount, rowAmount;
+        glm::vec2 velocity;
 };
 #endif
