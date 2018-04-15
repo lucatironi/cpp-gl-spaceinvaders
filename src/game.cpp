@@ -216,6 +216,8 @@ void Game::DoCollisions()
         {
             if (bomb.Life > 0.0f && CheckCollision(bomb, barrier))
             {
+                barrier.Position.x += 1.0f;
+                barrier.Size.x -= 2.0f;
                 bomb.Life = 0.0f;
             }
         }
@@ -227,6 +229,8 @@ void Game::DoCollisions()
         {
             if (laser.Life > 0.0f && CheckCollision(laser, barrier))
             {
+                barrier.Position.x += 1.0f;
+                barrier.Size.x -= 2.0f;
                 laser.Life = 0.0f;
             }
         }
