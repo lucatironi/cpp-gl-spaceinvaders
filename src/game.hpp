@@ -46,6 +46,7 @@ class Game
         void SpawnBombs();
 
         void InitPlayer();
+        void InitBarriers();
         void Reset();
 
         void SetFramebufferSize(GLuint framebufferWidth, GLuint framebufferHeight)

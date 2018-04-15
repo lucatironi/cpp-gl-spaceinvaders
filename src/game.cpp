@@ -37,14 +37,7 @@ void Game::Init()
 
     // Initalize game objects
     this->InitPlayer();
-
-    GLfloat offset = 0;
-    for (GLuint i = 0; i < 4; ++i)
-    {
-        offset += 146.0f;
-        glm::vec2 barrierPosition(offset, this->WindowHeight - 64.0f - LASERCANNON_SIZE.y - SCREEN_PADDING * 2);
-        this->Barriers.push_back(GameObject(barrierPosition, glm::vec2(64.0f, 32.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    }
+    this->InitBarriers();
 }
 
 void Game::ProcessInput(GLfloat deltaTime)
@@ -144,6 +137,7 @@ void Game::Render(GLfloat deltaTime)
 void Game::Reset()
 {
     this->InitPlayer();
+    this->InitBarriers();
     this->Invaders->Init();
     this->Projectiles->Init();
 }
@@ -157,6 +151,18 @@ void Game::InitPlayer()
         this->WindowWidth / 2 - LASERCANNON_SIZE.x / 2,
         this->WindowHeight - LASERCANNON_SIZE.y - SCREEN_PADDING);
     this->PlayerLaserCannon = new GameObject(playerPosition, LASERCANNON_SIZE, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f));
+}
+
+void Game::InitBarriers()
+{
+    this->Barriers.clear();
+    GLfloat offset = 0;
+    for (GLuint i = 0; i < 4; ++i)
+    {
+        offset += 146.0f;
+        glm::vec2 barrierPosition(offset, this->WindowHeight - 64.0f - LASERCANNON_SIZE.y - SCREEN_PADDING * 2);
+        this->Barriers.push_back(GameObject(barrierPosition, glm::vec2(64.0f, 32.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    }
 }
 
 GLboolean ShouldSpawn(GLuint chance)
