@@ -14,6 +14,7 @@
 enum GameState
 {
     GAME_ACTIVE,
+    GAME_PAUSED,
     GAME_MENU,
     GAME_WIN,
     GAME_LOST
@@ -35,7 +36,7 @@ class Game
         GLboolean Keys[1024];
         GLboolean KeysProcessed[1024];
 
-        Game(GLuint windowWidth, GLuint windowHeight, GLuint framebufferWidth, GLuint framebufferHeight);
+        Game(GLFWwindow *window, GLuint windowWidth, GLuint windowHeight, GLuint framebufferWidth, GLuint framebufferHeight);
         ~Game();
 
         void Init();
@@ -53,16 +54,17 @@ class Game
             { this->FramebufferWidth = framebufferWidth; this->FramebufferHeight = framebufferHeight; };
 
     private:
+        GLFWwindow *Window;
         GLuint WindowWidth, WindowHeight, FramebufferWidth, FramebufferHeight;
 
-        SpriteRenderer          *Renderer;
-        TextRenderer            *Text;
-        ProjectileManager       *Projectiles;
-        InvadersManager         *Invaders;
-        GameObject              *PlayerLaserCannon;
+        SpriteRenderer *Renderer;
+        TextRenderer *Text;
+        ProjectileManager *Projectiles;
+        InvadersManager *Invaders;
+        GameObject *PlayerLaserCannon;
         std::vector<GameObject> Barriers;
-        GLuint                  PlayerLives;
-        GLuint                  PlayerScore;
+        GLuint PlayerLives;
+        GLuint PlayerScore;
 };
 
 #endif

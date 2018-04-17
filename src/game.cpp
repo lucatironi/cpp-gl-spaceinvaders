@@ -1,12 +1,14 @@
 #include <sstream>
+#include <iostream>
 
 #include "game.hpp"
 #include "resource_manager.hpp"
 
-Game::Game(GLuint windowWidth, GLuint windowHeight, GLuint framebufferWidth, GLuint framebufferHeight)
+Game::Game(GLFWwindow *window, GLuint windowWidth, GLuint windowHeight, GLuint framebufferWidth, GLuint framebufferHeight)
     : State(GAME_MENU),
       Keys(),
       KeysProcessed(),
+      Window(window),
       WindowWidth(windowWidth),
       WindowHeight(windowHeight),
       FramebufferWidth(framebufferWidth),
@@ -42,11 +44,38 @@ void Game::Init()
 
 void Game::ProcessInput(GLfloat deltaTime)
 {
-    if (this->State == GAME_MENU || this->State == GAME_WIN || this->State == GAME_LOST)
+    if (this->State == GAME_MENU)
+    {
+        if (this->Keys[GLFW_KEY_ESCAPE] && !this->KeysProcessed[GLFW_KEY_ESCAPE])
+        {
+            this->KeysProcessed[GLFW_KEY_ESCAPE] = GL_TRUE;
+            glfwSetWindowShouldClose(this->Window, GL_TRUE);
+        }
+        if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
+        {
+            this->Reset();
+            this->State = GAME_ACTIVE;
+            this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
+        }
+    }
+    if (this->State == GAME_WIN || this->State == GAME_LOST)
     {
         if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
         {
             this->Reset();
+            this->State = GAME_MENU;
+            this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
+        }
+    }
+    if (this->State == GAME_PAUSED)
+    {
+        if (this->Keys[GLFW_KEY_ESCAPE] && !this->KeysProcessed[GLFW_KEY_ESCAPE])
+        {
+            this->State = GAME_MENU;
+            this->KeysProcessed[GLFW_KEY_ESCAPE] = GL_TRUE;
+        }
+        if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
+        {
             this->State = GAME_ACTIVE;
             this->KeysProcessed[GLFW_KEY_ENTER] = GL_TRUE;
         }
@@ -76,6 +105,11 @@ void Game::ProcessInput(GLfloat deltaTime)
             this->Projectiles->FireLaser(laserSpawnPoint, LASER_VELOCITY); // Up!
             this->KeysProcessed[GLFW_KEY_SPACE] = GL_TRUE;
         }
+        if (this->Keys[GLFW_KEY_ESCAPE] && !this->KeysProcessed[GLFW_KEY_ESCAPE])
+        {
+            this->State = GAME_PAUSED;
+            this->KeysProcessed[GLFW_KEY_ESCAPE] = GL_TRUE;
+        }
     }
 }
 
@@ -98,7 +132,7 @@ void Game::Update(GLfloat deltaTime)
 
 void Game::Render(GLfloat deltaTime)
 {
-    if (this->State == GAME_ACTIVE || this->State == GAME_MENU || this->State == GAME_WIN)
+    if (this->State == GAME_ACTIVE || this->State == GAME_PAUSED ||  this->State == GAME_MENU || this->State == GAME_WIN)
     {
         this->PlayerLaserCannon->Draw(*Renderer);
         this->Projectiles->Draw(*Renderer);
@@ -107,8 +141,11 @@ void Game::Render(GLfloat deltaTime)
             barrier.Draw(*Renderer);
     }
 
+    if (this->State == GAME_PAUSED)
+        Text->RenderText("Press ENTER to continue or ESC to go to the menu", 110.0f, this->WindowHeight / 2, 0.75f);
+
     if (this->State == GAME_MENU)
-        Text->RenderText("Press ENTER to start", 250.0f, this->WindowHeight / 2, 1.0f);
+        Text->RenderText("Press ENTER to start or ESC to quit", 190.0f, this->WindowHeight / 2, 0.75f);
 
     if (this->State == GAME_WIN)
         Text->RenderText("You WON!!!", 320.0f, this->WindowHeight / 2 - 20.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -117,7 +154,7 @@ void Game::Render(GLfloat deltaTime)
         Text->RenderText("You LOST...", 320.0f, this->WindowHeight / 2 - 20.0f, 1.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     if (this->State == GAME_WIN || this->State == GAME_LOST)
-        Text->RenderText("Press ENTER to retry or ESC to quit", 130.0f, this->WindowHeight / 2, 1.0f);
+        Text->RenderText("Press ENTER to go to the menu", 220.0f, this->WindowHeight / 2, 0.75f);
 
     // Render Lives and Score
     std::stringstream lives;

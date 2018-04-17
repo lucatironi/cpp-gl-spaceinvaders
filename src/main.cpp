@@ -49,7 +49,7 @@ int main()
     int framebufferWidth, framebufferHeight;
     glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
 
-    SpaceInvaders = new Game(WindowWidth, WindowHeight, framebufferWidth, framebufferHeight);
+    SpaceInvaders = new Game(window, WindowWidth, WindowHeight, framebufferWidth, framebufferHeight);
     SpaceInvaders->Init();
 
     GLfloat deltaTime = 0.0f;
@@ -80,11 +80,8 @@ int main()
     return 0;
 }
 
-void key_callback(GLFWwindow *window, int key, int, int action, int)
+void key_callback(GLFWwindow* /* window */, int key, int /* scancode */, int action, int /* mods */)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
