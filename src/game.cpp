@@ -46,11 +46,13 @@ void Game::ProcessInput(GLfloat deltaTime)
 {
     if (this->State == GAME_MENU)
     {
+        // ESC quits the game
         if (this->Keys[GLFW_KEY_ESCAPE] && !this->KeysProcessed[GLFW_KEY_ESCAPE])
         {
             this->KeysProcessed[GLFW_KEY_ESCAPE] = GL_TRUE;
             glfwSetWindowShouldClose(this->Window, GL_TRUE);
         }
+        // ENTER (re)starts the game
         if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
         {
             this->Reset();
@@ -60,6 +62,7 @@ void Game::ProcessInput(GLfloat deltaTime)
     }
     if (this->State == GAME_WIN || this->State == GAME_LOST)
     {
+        // ENTER restart the game and goes to the menu
         if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
         {
             this->Reset();
@@ -69,11 +72,13 @@ void Game::ProcessInput(GLfloat deltaTime)
     }
     if (this->State == GAME_PAUSED)
     {
+        // ESC goes to Menu
         if (this->Keys[GLFW_KEY_ESCAPE] && !this->KeysProcessed[GLFW_KEY_ESCAPE])
         {
             this->State = GAME_MENU;
             this->KeysProcessed[GLFW_KEY_ESCAPE] = GL_TRUE;
         }
+        // ENTER resumes the game
         if (this->Keys[GLFW_KEY_ENTER] && !this->KeysProcessed[GLFW_KEY_ENTER])
         {
             this->State = GAME_ACTIVE;
@@ -83,7 +88,7 @@ void Game::ProcessInput(GLfloat deltaTime)
     if (this->State == GAME_ACTIVE)
     {
         GLfloat deltaSpace = LASERCANNON_VELOCITY * deltaTime;
-        // Move player laser cannon
+        // A D move player laser cannon
         if (this->Keys[GLFW_KEY_A]) // Left
         {
             if (this->PlayerLaserCannon->Position.x >= SCREEN_PADDING)
@@ -94,7 +99,7 @@ void Game::ProcessInput(GLfloat deltaTime)
             if (this->PlayerLaserCannon->Position.x <= this->WindowWidth - this->PlayerLaserCannon->Size.x - SCREEN_PADDING)
                 this->PlayerLaserCannon->Position.x += deltaSpace;
         }
-        // Fire lasers
+        // SPACE fires lasers
         if (this->Keys[GLFW_KEY_SPACE] && !this->KeysProcessed[GLFW_KEY_SPACE])
         {
             // Add projectile to list
@@ -105,6 +110,7 @@ void Game::ProcessInput(GLfloat deltaTime)
             this->Projectiles->FireLaser(laserSpawnPoint, LASER_VELOCITY); // Up!
             this->KeysProcessed[GLFW_KEY_SPACE] = GL_TRUE;
         }
+        // ESC pauses game
         if (this->Keys[GLFW_KEY_ESCAPE] && !this->KeysProcessed[GLFW_KEY_ESCAPE])
         {
             this->State = GAME_PAUSED;
@@ -142,10 +148,10 @@ void Game::Render(GLfloat deltaTime)
     }
 
     if (this->State == GAME_PAUSED)
-        Text->RenderText("Press ENTER to continue or ESC to go to the menu", 110.0f, this->WindowHeight / 2, 0.75f);
+        Text->RenderText("Press ENTER to resume or ESC to go to the menu", 110.0f, SCREEN_PADDING, 0.75f);
 
     if (this->State == GAME_MENU)
-        Text->RenderText("Press ENTER to start or ESC to quit", 190.0f, this->WindowHeight / 2, 0.75f);
+        Text->RenderText("Press ENTER to start or ESC to quit", 190.0f, SCREEN_PADDING, 0.75f);
 
     if (this->State == GAME_WIN)
         Text->RenderText("You WON!!!", 320.0f, this->WindowHeight / 2 - 20.0f, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -156,19 +162,19 @@ void Game::Render(GLfloat deltaTime)
     if (this->State == GAME_WIN || this->State == GAME_LOST)
         Text->RenderText("Press ENTER to go to the menu", 220.0f, this->WindowHeight / 2, 0.75f);
 
-    // Render Lives and Score
-    std::stringstream lives;
-    lives << "Lives: " << this->PlayerLives;
-    Text->RenderText(lives.str(), 8.0f, 8.0f, 1.0f);
-
+    // Render Score and Lives
     std::stringstream score;
     score << "Score: " << this->PlayerScore;
-    Text->RenderText(score.str(), this->WindowWidth - 200.0f, 8.0f, 1.0f);
+    Text->RenderText(score.str(), 8.0f, this->WindowHeight - SCREEN_PADDING - 8.0f, 1.0f);
+
+    std::stringstream lives;
+    lives << "Lives: " << this->PlayerLives;
+    Text->RenderText(lives.str(), this->WindowWidth - 140.0f, this->WindowHeight - SCREEN_PADDING - 8.0f, 1.0f);
 
     // Render FPS
     std::stringstream fps;
     fps << (int)(1 / deltaTime);
-    Text->RenderText(fps.str(), this->WindowWidth - 30.0f, this->WindowHeight - 20.0f, 0.5f);
+    Text->RenderText(fps.str(), this->WindowWidth - 30.0f, 4.0f, 0.5f);
 }
 
 void Game::Reset()
@@ -186,7 +192,7 @@ void Game::InitPlayer()
 
     glm::vec2 playerPosition = glm::vec2(
         this->WindowWidth / 2 - LASERCANNON_SIZE.x / 2,
-        this->WindowHeight - LASERCANNON_SIZE.y - SCREEN_PADDING);
+        this->WindowHeight - LASERCANNON_SIZE.y - SCREEN_PADDING * 2);
     this->PlayerLaserCannon = new GameObject(playerPosition, LASERCANNON_SIZE, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(0.0f));
 }
 
@@ -217,7 +223,7 @@ void Game::SpawnBombs()
             glm::vec2 bombSpawnPoint = glm::vec2(
                 invader.Position.x + INVADER_SIZE.x / 2,
                 invader.Position.y + INVADER_SIZE.y);
-            this->Projectiles->FireBomb(bombSpawnPoint, BOMB_VELOCITY); // Up!
+            this->Projectiles->FireBomb(bombSpawnPoint, BOMB_VELOCITY); // Down!
         }
     }
 }
