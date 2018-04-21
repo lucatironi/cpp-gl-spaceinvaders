@@ -27,15 +27,18 @@ void Game::Init()
 {
     // Load shaders
     ResourceManager::LoadShader("../src/shaders/sprite.vs", "../src/shaders/sprite.fs", nullptr, "sprite");
+    ResourceManager::LoadShader("../src/shaders/text.vs", "../src/shaders/text.fs", nullptr, "text");
     // Configure shaders
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(this->WindowWidth), static_cast<GLfloat>(this->WindowHeight), 0.0f, -1.0f, 1.0f);
     ResourceManager::GetShader("sprite").Use().SetMatrix4("projection", projection);
+    ResourceManager::GetShader("text").Use().SetMatrix4("projection", projection);
+    ResourceManager::GetShader("text").Use().SetInteger("text", 0);
     // Set render-specific controls
     this->Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
     this->Projectiles = new ProjectileManager(25);
     this->Invaders = new InvadersManager(INVADERS_COUNT, INVADERS_COLUMNS);
-    this->Text = new TextRenderer(this->WindowWidth, this->WindowHeight);
-    this->Text->Load("../assets/PressStart2P-Regular.ttf", 16);
+    this->Text = new TextRenderer(ResourceManager::GetShader("text"));
+    this->Text->LoadFont("../assets/PressStart2P-Regular.ttf", 16);
 
     // Initalize game objects
     this->InitPlayer();

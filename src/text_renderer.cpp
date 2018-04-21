@@ -5,27 +5,20 @@
 #include FT_FREETYPE_H
 
 #include "text_renderer.hpp"
-#include "resource_manager.hpp"
 
-TextRenderer::TextRenderer(GLuint width, GLuint height)
+TextRenderer::TextRenderer(Shader shader)
 {
-    // Load and configure shader
-    this->TextShader = ResourceManager::LoadShader("../src/shaders/text.vs", "../src/shaders/text.fs", nullptr, "text");
-    this->TextShader.SetMatrix4("projection", glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f), GL_TRUE);
-    this->TextShader.SetInteger("text", 0);
-    // Configure VAO/VBO for texture quads
-    glGenVertexArrays(1, &this->VAO);
-    glGenBuffers(1, &this->VBO);
-    glBindVertexArray(this->VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    this->shader = shader;
+    this->initRenderData();
 }
 
-void TextRenderer::Load(std::string font, GLuint fontSize)
+TextRenderer::~TextRenderer()
+{
+    glDeleteVertexArrays(1, &this->quadVAO);
+    glDeleteBuffers(1, &this->VBO);
+}
+
+void TextRenderer::LoadFont(std::string font, GLuint fontSize)
 {
     // First clear the previously loaded Characters
     this->Characters.clear();
@@ -76,7 +69,7 @@ void TextRenderer::Load(std::string font, GLuint fontSize)
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
             glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
             GLuint(face->glyph->advance.x)};
-        Characters.insert(std::pair<GLchar, Character>(c, character));
+        this->Characters.insert(std::pair<GLchar, Character>(c, character));
     }
     glBindTexture(GL_TEXTURE_2D, 0);
     // Destroy FreeType once we're finished
@@ -87,10 +80,10 @@ void TextRenderer::Load(std::string font, GLuint fontSize)
 void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
 {
     // Activate corresponding render state
-    this->TextShader.Use();
-    this->TextShader.SetVector3f("textColor", color);
+    this->shader.Use();
+    this->shader.SetVector3f("textColor", color);
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(this->VAO);
+    glBindVertexArray(this->quadVAO);
 
     // Iterate through all characters
     std::string::const_iterator c;
@@ -126,4 +119,20 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void TextRenderer::initRenderData()
+{
+    // Configure VAO/VBO for texture quads
+    glGenVertexArrays(1, &this->quadVAO);
+    glGenBuffers(1, &this->VBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+    glBindVertexArray(this->quadVAO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
