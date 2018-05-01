@@ -5,6 +5,9 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include <irrKlang.h>
+using namespace irrklang;
+
 #include "sprite_renderer.hpp"
 #include "projectile_manager.hpp"
 #include "invaders_manager.hpp"
@@ -59,6 +62,7 @@ class Game
 
         SpriteRenderer          *Renderer;
         TextRenderer            *Text;
+        ISoundEngine            *SoundEngine;
         ProjectileManager       *Projectiles;
         InvadersManager         *Invaders;
         GameObject              *PlayerLaserCannon;

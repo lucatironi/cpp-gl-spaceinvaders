@@ -23,6 +23,7 @@ Game::~Game()
     delete this->Text;
     delete this->Projectiles;
     delete this->Invaders;
+    this->SoundEngine->drop();
 }
 
 void Game::Init()
@@ -45,6 +46,9 @@ void Game::Init()
     this->Invaders = new InvadersManager(INVADERS_COUNT, INVADERS_COLUMNS);
     this->InitPlayer();
     this->InitBarriers();
+
+    // Initialize other objects
+    this->SoundEngine = createIrrKlangDevice();
 }
 
 void Game::ProcessInput(GLfloat deltaTime)
@@ -113,6 +117,7 @@ void Game::ProcessInput(GLfloat deltaTime)
                 this->PlayerLaserCannon->Position.y
             );
             this->Projectiles->FireLaser(laserSpawnPoint, LASER_VELOCITY); // Up!
+            this->SoundEngine->play2D("../assets/laser.wav", GL_FALSE);
             this->KeysProcessed[GLFW_KEY_SPACE] = GL_TRUE;
         }
         // ESC pauses game
@@ -257,6 +262,7 @@ void Game::DoCollisions()
     {
         if (bomb.Life > 0.0f && CheckCollision(bomb, *this->PlayerLaserCannon))
         {
+            this->SoundEngine->play2D("../assets/hit.wav", GL_FALSE);
             this->PlayerLives--;
             bomb.Life = 0.0f;
         }
