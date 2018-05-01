@@ -1,5 +1,4 @@
 #include <sstream>
-#include <iostream>
 
 #include "game.hpp"
 #include "resource_manager.hpp"
@@ -21,6 +20,9 @@ Game::Game(GLFWwindow *window, GLuint windowWidth, GLuint windowHeight, GLuint f
 Game::~Game()
 {
     delete this->Renderer;
+    delete this->Text;
+    delete this->Projectiles;
+    delete this->Invaders;
 }
 
 void Game::Init()
@@ -35,12 +37,12 @@ void Game::Init()
     ResourceManager::GetShader("text").Use().SetInteger("text", 0);
     // Set render-specific controls
     this->Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
-    this->Projectiles = new ProjectileManager(25);
-    this->Invaders = new InvadersManager(INVADERS_COUNT, INVADERS_COLUMNS);
     this->Text = new TextRenderer(ResourceManager::GetShader("text"));
     this->Text->LoadFont("../assets/PressStart2P-Regular.ttf", 16);
 
     // Initalize game objects
+    this->Projectiles = new ProjectileManager(25);
+    this->Invaders = new InvadersManager(INVADERS_COUNT, INVADERS_COLUMNS);
     this->InitPlayer();
     this->InitBarriers();
 }

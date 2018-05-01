@@ -57,14 +57,14 @@ class Game
         GLFWwindow *Window;
         GLuint WindowWidth, WindowHeight, FramebufferWidth, FramebufferHeight;
 
-        SpriteRenderer *Renderer;
-        TextRenderer *Text;
-        ProjectileManager *Projectiles;
-        InvadersManager *Invaders;
-        GameObject *PlayerLaserCannon;
+        SpriteRenderer          *Renderer;
+        TextRenderer            *Text;
+        ProjectileManager       *Projectiles;
+        InvadersManager         *Invaders;
+        GameObject              *PlayerLaserCannon;
         std::vector<GameObject> Barriers;
-        GLuint PlayerLives;
-        GLuint PlayerScore;
+        GLuint                  PlayerLives;
+        GLuint                  PlayerScore;
 };
 
 #endif
